@@ -1,13 +1,9 @@
 #include <Rcpp.h>
 using namespace Rcpp;
-#include "int_stuff.h"
 
+#include "int_stuff.h"
 #include "QuartetDistanceCalculator.h"
 
-#include <R.h>
-#include <Rdefines.h>
-#include <Rinternals.h>
-#include <cstdlib>
 #include <vector>
 
 //' Triplet and quartet distances with tqDist
@@ -134,7 +130,6 @@ IntegerMatrix tqdist_AllPairsQuartetDistance(CharacterVector file) {
   std::vector<std::vector<INTTYPE_N4> > res = quartetCalc.calculateAllPairsQuartetDistance(filename);
   
   IntegerMatrix IM_res(res.size(), res.size());
-//  int *ians = INTEGER(res_sexp);
   
   for (size_t r = 0; r < res.size(); r++) {
     for (size_t c = 0; c < r; c++) {

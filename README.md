@@ -1,8 +1,9 @@
+[![Project Status: Inactive.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 [![Build Status](https://travis-ci.org/ms609/Quartet.svg?branch=master)](https://travis-ci.org/ms609/Quartet)
 [![codecov](https://codecov.io/gh/ms609/Quartet/branch/master/graph/badge.svg)](https://codecov.io/gh/ms609/Quartet)
-[![CRAN Status Badge](http://www.r-pkg.org/badges/version/Quartet)](https://cran.r-project.org/package=Quartet)
-[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/Quartet)](https://cran.r-project.org/package=Quartet)
-[![Project Status: Active.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![CRAN Status Badge](https://www.r-pkg.org/badges/version/Quartet)](https://cran.r-project.org/package=Quartet)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/Quartet)](https://cran.r-project.org/package=Quartet)
+[![DOI](https://zenodo.org/badge/80424189.svg)](https://zenodo.org/badge/latestdoi/80424189)
 
 # Quartet
 
@@ -18,21 +19,20 @@ function `SplitStatus`).
 
 
 ## Using the package
-The package will soon be compiled and uploaded to the CRAN repository.  
-Meanwhile, you can install the latest version of the package into R thus:
-
-```r
-# Install the devtools package from CRAN
-install.packages('devtools')
-
-# Install the package from github
-devtools::install_github('ms609/Quartet', args='--no-multiarch')
-
-# Load the package into R
+Install and load the library from CRAN as follows:
+```
+install.packages('Quartet')
 library('Quartet')
 ```
 
-You will need [Rtools](https://cran.r-project.org/bin/windows/Rtools/) installed to allow R to build the package.
+If you're feeling brave, you can install the development version thus:
+```r
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github('ms609/Quartet')
+```
+
+You will need [Rtools](https://cran.r-project.org/bin/windows/Rtools/) installed 
+in order to build the development version from source.
 
 ## References
 - Brodal G.S., Fagerberg R., Pedersen C.N.S. 2004. Computing the quartet 
