@@ -42,6 +42,7 @@ plot(ape::read.tree(text='((A, D), (C, B));'), tip.color=cbPalette8[c(1, 5, 7, 4
 
 ## ----Plot-a-quartet, echo=FALSE, cache=TRUE, fig.asp=1.3/3, fig.width=6, out.width='80%', fig.align='center'----
 par(mfrow=c(1, 3))
+suppressWarnings(RNGversion("3.5.0")) # Stopgap until R 3.6.0 is widely available 
 set.seed(7)
 trees7 <- lapply(logical(3), function (X) {
     tr <- ape::rtree(7, br=NULL)

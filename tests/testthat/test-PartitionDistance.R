@@ -3,8 +3,8 @@ context("PartitionDistance.R")
 data('sq_trees')
 
 test_that("SplitStatus works", {
-  expect_equal(c(15, 8), dim(SplitStatus(sq_trees)))
-  expect_equal(c(15, 8), dim(SplitStatus(sq_trees, sq_trees$opposite_tree)))
+  expect_equal(c(length(sq_trees), 8), dim(SplitStatus(sq_trees)))
+  expect_equal(c(length(sq_trees), 8), dim(SplitStatus(sq_trees, sq_trees$opposite_tree)))
   expect_equal(SplitStatus(sq_trees, sq_trees$ref_tree), SplitStatus(sq_trees))
 })
 
@@ -16,6 +16,7 @@ test_that("Splits are compared", {
 })
 
 test_that("CompareSplits works", {
+  suppressWarnings(RNGversion("3.5.0")) # Stopgap until R 3.6.0 is widely available
   set.seed(1)
   splits6 <- Tree2Splits(ape::rtree(6, br=NULL)) # No longer needed but
   # preserves random seed!
