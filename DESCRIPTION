@@ -1,6 +1,5 @@
 Package: Quartet
-Version: 1.0.2
-Date: 2019-03-06
+Version: 1.0.3
 Title: Comparison of Phylogenetic Trees Using Quartet and Bipartition
         Measures
 Description: Calculates the number of four-taxon subtrees consistent with a pair
@@ -32,8 +31,9 @@ License: GPL (>= 2)
 Encoding: UTF-8
 Language: en-GB
 Depends: R (>= 3.4.0)
-Imports: ape, memoise, Rdpack, Ternary (>= 1.0), TreeSearch (>= 0.2.1)
+Imports: ape, memoise, Rdpack, Ternary (>= 1.0), TreeSearch (> 0.3.0)
 Suggests: bookdown, knitr, phangorn, Rcpp, rmarkdown, testthat, usethis
+SystemRequirements: C++11
 RdMacros: Rdpack
 LinkingTo: Rcpp
 LazyData: true
@@ -41,7 +41,7 @@ ByteCompile: true
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2019-03-06 11:53:03 UTC; ms609
+Packaged: 2019-12-16 16:22:03 UTC; ms609
 Author: Martin R. Smith [aut, cre, cph]
     (<https://orcid.org/0000-0001-5660-1727>),
   Andreas Sand [ant],
@@ -53,4 +53,4 @@ Author: Martin R. Smith [aut, cre, cph]
   Morten K. Holt [ant]
 Maintainer: Martin R. Smith <martin.smith@durham.ac.uk>
 Repository: CRAN
-Date/Publication: 2019-03-06 13:00:10 UTC
+Date/Publication: 2019-12-30 17:30:02 UTC
