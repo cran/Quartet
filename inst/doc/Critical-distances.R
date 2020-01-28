@@ -1,17 +1,18 @@
 ## ----Load package, include=FALSE-----------------------------------------
 require('Quartet')
+require('ape') # for plot.phylo
 
-## ----Example tree--------------------------------------------------------
+## ----example-tree--------------------------------------------------------
 tree_a <- ape::read.tree(text="((1, 2), (3, (4, 5)));")
 
-## ----Plot trees, fig.height=1.6, fig.width=2, echo=FALSE-----------------
+## ----plot-trees, fig.height=1.6, fig.width=2, echo=FALSE-----------------
 par(mar=rep(0.3, 4))
 plot(tree_a)
 
 ## ----none-in-common------------------------------------------------------
 tree_b <- ape::read.tree(text="((1, 5), (3, (2, 4)));")
 
-## ----Plot next tree, fig.height=1.6, fig.width=2, echo=FALSE-------------
+## ----plot-tree-b, fig.height=1.6, fig.width=2, echo=FALSE----------------
 par(mar=rep(0.3, 4))
 plot(tree_b)
 
@@ -22,11 +23,11 @@ tree_c <- ape::read.tree(text="((1, 2), ((3, 6), (4, 5)));")
 par(mar=rep(0.3, 4))
 plot(tree_c, tip.color=c(1,1,1,2,1,1))
 
-## ----Adding tip 6 to Tree B duplicates a quartet, fig.height=5, fig.width=2.5, echo=FALSE----
+## ----Adding-tip-6-to-Tree-B-duplicates-a-quartet, fig.height=5, fig.width=2.5, echo=FALSE----
 PlotApeTree <- function (text, quartet) {
-  orig <- TreeSearch::RenumberTips(tree_c, as.character(1:6))
+  orig <- TreeTools::RenumberTips(tree_c, as.character(1:6))
   tree <- ape::read.tree(text=text)
-  PlotQuartet(list(orig, TreeSearch::RenumberTips(tree, as.character(1:6))), quartet, overwritePar=FALSE, cex=0.9)
+  PlotQuartet(list(orig, TreeTools::RenumberTips(tree, as.character(1:6))), quartet, overwritePar=FALSE, cex=0.9)
 }
 
 par(mfrow=c(7, 2), mar=rep(0.4, 4), cex=0.9)

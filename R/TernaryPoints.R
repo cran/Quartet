@@ -3,7 +3,7 @@
 #' Generate points to depict tree difference (in terms of resolution
 #' and accuracy) on a ternary plot.
 #' 
-#' The ternary plot will depict the number of quartets or bipartitions that are:
+#' The ternary plot will depict the number of quartets or splits that are:
 #' - resolved in the reference tree (`cf`), but neither present nor contradicted
 #'   in each comparison tree (`trees`);
 #' - resolved differently in the reference and the comparison tree;
@@ -32,7 +32,7 @@
 #'     col=Ternary::cbPalette8[2], cex=0.8)
 #'   TernaryText(SplitPoints(sq_trees, cf=sq_trees$collapse_one), 1:15, 
 #'     col=Ternary::cbPalette8[3], cex=0.8)
-#'   legend('bottomright', c("Quartets", "Bipartitions"), bty='n', pch=1, cex=0.8,
+#'   legend('bottomright', c("Quartets", "Splits"), bty='n', pch=1, cex=0.8,
 #'     col=Ternary::cbPalette8[2:3])
 #'   
 #' }
@@ -40,7 +40,7 @@
 #' @references 
 #' \insertRef{Smith2019}{Quartet}
 #' 
-#' @author Martin R. Smith
+#' @template MRS
 #' 
 #' @export
 QuartetPoints <- function (trees, cf = trees[[1]]) {
@@ -78,7 +78,7 @@ BipartitionPoints <- SplitPoints
 #' `r2a`, `da`, `sa`, `r2b`, `db` and `sb`.
 #' Lines from `a` to `b` in each row connect points of equal symmetric difference.
 #' 
-#' @author Martin R. Smith
+#' @template MRS
 #' @export
 SymmetricDifferenceLineEnds <- function (nsd) {
   if (any(nsd < 0 | nsd > 1)) stop("nsd must be between 0 and 1")
