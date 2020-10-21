@@ -1,64 +1,70 @@
 WHICH_OTHER_NODE <- 2:4
 
-#' Plot quartet on a tree topology
+#' Plot quartet on tree topologies
 #' 
 #' Draws a tree, highlighting the members of a specified quartet in colour.
 #' 
 #' 
 #' @param tree A tree of class \code{\link[ape:read.tree]{phylo}},
-#'   or a list of such trees.
-#' @param quartet A vector of four integers, corresponding to numbered tips on
-#'                the tree; or a character vector specifying the labels of four
-#'                tips.
-#' @param overwritePar Logical specifying whether to use existing 
-#'                     `\link[graphics]{par}` `mfrow` and `mar` parameters
-#'                      (\code{FALSE}),
-#'                     or to plot trees side-by-side in a new graphical device (`TRUE`).
+#'   or a list of such trees.  The first member of `tree` will be considered
+#'   the 'reference' tree.
+#' @param quartet A vector of four integers, corresponding to numbered leaves on
+#'  the tree; or a character vector specifying the labels of four leaves.
+#' @param overwritePar Logical specifying whether to use existing `mfrow` and 
+#' `mar` parameters from \code{\link[graphics]{par}()} (`FALSE`),
+#' or to plot trees side-by-side in a new graphical device (`TRUE`).
 #' @param caption Logical specifying whether to annotate each plot to specify
 #'   whether the quartet selected is in the same or a different state to the 
 #'   reference tree.
-#' @param \dots Additional parameters to send to \code{\link[graphics]{plot}}.
+#' @param \dots Additional parameters to send to 
+#' \code{\link[ape:plot.phylo]{plot}()}.
 #'                
 #' @template MRS
 #' 
-#' @return Returns `invisible()`, having plotted a tree in which the first two members
-#' of `quartet` are highlighted in orange, and the second two highlighted in 
-#' blue.
+#' @return `PlotQuartet()` returns `invisible()`, having plotted a tree in 
+#' which the first two members of `quartet` are highlighted in orange, and the
+#' second two highlighted in blue.
 #' 
 #' @examples 
-#'   data('sq_trees')
+#' data('sq_trees')
 #'   
-#'   par(mfrow=c(3, 5), mar=rep(0.5, 4))
-#'   PlotQuartet(sq_trees, c(2, 5, 3, 8), overwritePar = FALSE)
+#' oPar <- par(mfrow = c(3, 6), mar = rep(0.5, 4))
+#' PlotQuartet(sq_trees, c(2, 5, 3, 8), overwritePar = FALSE)
+#' par(oPar)
 #' 
 #' @importFrom graphics par plot legend
-#' @importFrom TreeTools RenumberTips
+#' @importFrom TreeTools NTip RenumberTips
 #' @export
 PlotQuartet <- function (tree, quartet, overwritePar = TRUE, 
                          caption = TRUE, ...) {
   cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
                  "#F0E442", "#0072B2", "#D55E00", "#CC79A7") 
   
-  if (inherits(tree, 'phylo')) tree <- structure(list(tree), class='multiPhylo')
-  n_tip <- length(tree[[1]]$tip.label)
+  if (inherits(tree, 'phylo')) {
+    tree <- c(tree)
+  }
+  tree1 <- tree[[1]]
+  n_tip <- NTip(tree1)
   
   if (overwritePar) {
-    originalPar <- par(mfrow=c(1, length(tree)), mar=rep(1, 4))
+    originalPar <- par(mfrow = c(1, length(tree)), mar = rep(1, 4))
     on.exit(par(originalPar))
   }
   
-  labelOrder <- tree[[1]]$tip.label
-  state1 <- QuartetState(quartet, tree[[1]])
+  labelOrder <- tree1$tip.label
+  state1 <- QuartetState(quartet, tree1)
   tip_colours <- integer(n_tip) + 1L
-  names(tip_colours) <- tree[[1]]$tip.label
-  tip_colours[quartet] <- 3L
-  tip_colours[c(quartet[1], quartet[state1])] <- 2L
-  for (tr in tree) {
+  names(tip_colours) <- tree1$tip.label
+  tip_colours[quartet] <- 2L
+  if (state1) tip_colours[quartet[c(state1, 4L)]] <- 3L
+  plot(tree1, tip.color = cbPalette[tip_colours], ...)
+  if (caption) legend('bottomleft', bty = 'n', cex = 0.9, 'Reference')
+  for (tr in tree[-1]) {
     tr <- RenumberTips(tr, labelOrder)
-    plot(tr, tip.color=cbPalette[tip_colours], ...)
+    plot(tr, tip.color = cbPalette[tip_colours], ...)
     if (caption) {
       trState <- QuartetState(quartet, tr)
-      legend('bottomleft', bty='n', cex=0.9,
+      legend('bottomleft', bty = 'n', cex = 0.9,
          if (trState == state1) {
            "Same"
          } else if (trState == 0L) {
@@ -71,180 +77,6 @@ PlotQuartet <- function (tree, quartet, overwritePar = TRUE,
     }
   }
   invisible()
-}
-
-#' List all quartets
-#'
-#' Lists all choices of four taxa from a tree.
-#'  
-#' A more computationally efficient alternative to \code{\link[utils]{combn}},
-#' `AllQuartets` uses \code{\link[memoise]{memoise}} to make repeated calls faster.
-#'
-#' @param n_tips Integer, specifying the number of tips in a tree.
-#' 
-#' @return Returns a list of length \code{choose(n_tips, 4)}, with each entry 
-#' corresponding to a unique selection of four different integers less than
-#' or equal to `n_tips`
-#' 
-#' @template MRS
-#'
-#' @family quartet counting functions
-#' @seealso \code{\link[utils]{combn}}
-#' 
-#' @examples
-#'  n_tips <- 6
-#'  AllQuartets(n_tips)
-#'  
-#'  combn(n_tips, 4) # Provides the same information, but for large 
-#'                   # values of n_tips is significantly slower.
-#' 
-#' @importFrom memoise memoise
-#' @export
-AllQuartets <- memoise(function (n_tips) {
-  unlist(lapply(seq_len(n_tips - 3), function (i) {
-    unlist(lapply((i + 1):(n_tips - 2), function (j) {
-      unlist(lapply((j + 1):(n_tips - 1), function (k) {
-        lapply((k + 1):n_tips, function (l) {
-          c(i, j, k, l)
-        })
-      }), recursive=FALSE)
-    }), recursive=FALSE)
-  }), recursive=FALSE)
-})
-
-#' Quartet State(s)
-#' 
-#' Report the status of the specified quartet(s).
-#' 
-#' One of the three possible four-taxon trees will be consistent with any set of
-#' splits generated from a fully resolved tree.  If the taxa are numbered 
-#' 1 to 4, this tree can be identified by naming the tip most closely related 
-#' to taxon 1.
-#' If a set of splits is generated from a tree that contains polytomies, 
-#' it is possible that all three four-taxon trees are consistent with the set
-#' of splits
-#'
-#' @param tips A four-element array listing a quartet of tips, either by their
-#'             number (if class `numeric`) or their name (if class `character`).
-#' @param splits An object that can be induced to a `Splits` object using
-#'   \code{\link[TreeTools]{as.Splits}}.
-#' @param bips Depreciated; included for compatibility with v1.0.2 and below.
-#'
-#' @return `QuartetState` returns `0` if the relationships of the four taxa are
-#'  not constrained by the provided splits, or the index of the closest
-#'  relative to `tips[1]`, otherwise.
-#'
-#' @template MRS
-#' 
-#' @family element-by-element comparisons
-#' @seealso \code{\link{CompareQuartets}}, used to compare quartet states between
-#'   trees.
-#' @examples{
-#'   nTip <- 6
-#'   trees <- list(ape::rtree(nTip, tip.label=seq_len(nTip), br=NULL),
-#'                 ape::rtree(nTip, tip.label=seq_len(nTip), br=NULL))
-#'   
-#'   trees[[3]] <- TreeTools::CollapseNode(trees[[2]], 9:10)
-#'   
-#'   QuartetState(c(1, 3, 4, 6), trees[[2]])  
-#'   QuartetState(1:4, trees[[1]]) == QuartetState(1:4, trees[[2]])
-#'   QuartetState(c(1, 3, 4, 6), trees[[3]])  
-#'   
-#'   QuartetStates(trees[[2]])
-#'   QuartetStates(trees[[3]])
-#'   
-#' }
-#' 
-#' @references 
-#'   \insertRef{Estabrook1985}{Quartet}
-#' 
-#' @importFrom TreeTools Subsplit as.Splits
-#' @export
-QuartetState <- function (tips, bips, splits = bips) {
-  statement <- Subsplit(as.Splits(splits), tips, keepAll = FALSE, 
-                        unique = TRUE)[1]
-  if (statement == 0L) {
-    0L
-  } else if (statement == 3L || statement == 12L) {
-    2L
-  } else if (statement == 5L || statement == 10L) {
-    3L
-  } else {
-    4L
-  }
-}
-
-#' @describeIn QuartetState A convenience wrapper that lists the status of all
-#' possible quartets for a given `Splits` object.
-#'        
-#' @importFrom ape Ntip
-#' @importFrom TreeTools as.Splits NTip
-#' @export
-QuartetStates <- function (splits) {
-  splits <- as.Splits(splits)
-  outLength <- if (mode(splits) == 'list') length(splits) else 1L
-  nTip <- NTip(splits)[1]
-  allQuartets <- AllQuartets(nTip)
-  
-  subs <- vapply(allQuartets, function (tips) {
-  ret <- vapply(Subsplit(splits, tips, keepAll = FALSE, unique = TRUE),	
-                function (x) {if (length(x)) as.integer(x) else NA},	
-                integer(1L))	
-  if (length(ret) == 0L) ret <- rep(NA, outLength)	
-  ret	
-  }, integer(outLength))
-  
-  # Return:
-  ifelse(is.na(subs), 0L,
-         ifelse(subs == 3L | subs == 12L, 2L,
-                ifelse(subs == 5L | subs == 10L, 3L, 4L)))
-}
-
-#' Compare quartet states by explicit enumeration
-#' 
-#' Uses explicit enumeration to compare two lists of quartet states, 
-#' detailing how many are identical and how many are unresolved.
-#' For most purposes, the faster function \code{\link{QuartetStatus}} will be preferable.
-#' 
-#' @param x,cf List of quartet states, perhaps generated by
-#'  \code{\link{QuartetStates}}.
-#'
-#' @templateVar intro Returns an array of seven numeric elements, corresponding to the quantities of Estabrook _et al_. (1985):
-#' @template returnEstabrook
-#' 
-#' @template MRS
-#'
-#' @family element-by-element comparisons
-#' @seealso \code{\link{QuartetStatus}}, generates this output from a list of
-#'  trees.
-#'
-#' @examples
-#'   n_tip <- 6
-#'   trees <- list(ape::rtree(n_tip, tip.label=seq_len(n_tip), br=NULL),
-#'                 ape::rtree(n_tip, tip.label=seq_len(n_tip), br=NULL))
-#'   quartets <- QuartetStates(trees)
-#'   CompareQuartets(quartets[[1]], quartets[[2]])
-#' 
-#'@references {
-#' \insertRef{Estabrook1985}{Quartet}
-#'}
-#' 
-#' @export
-CompareQuartets <- function (x, cf) {
-  x_resolved <- as.logical(x)
-  cf_resolved <- as.logical(cf)
-  both_resolved <- x_resolved & cf_resolved
-  n_both_resolved <- sum(both_resolved)
-  n_same <- sum(x[both_resolved] == cf[both_resolved])
-  c(
-    N = 2L * length(x),
-    Q = length(x),
-    s = n_same,
-    d = n_both_resolved - n_same,
-    r1 = sum(x_resolved) - n_both_resolved,
-    r2 = sum(cf_resolved) - n_both_resolved,
-    u = sum(!x_resolved & !cf_resolved)
-  )
 }
 
 #' @describeIn QuartetStatus Reports split statistics obtained after removing all

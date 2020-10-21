@@ -9,7 +9,7 @@
 \usage{
 SplitStatus(trees, cf = trees[[1]])
 
-SharedSplitStatus(trees, cf = trees[[1]])
+SharedSplitStatus(trees, cf)
 }
 \arguments{
 \item{trees}{A list of trees of class \code{\link[ape:read.tree]{phylo}},
@@ -59,42 +59,41 @@ tips that do not occur in both trees being compared.
 }}
 
 \examples{
-{
-  data('sq_trees')
-  
-  # Calculate the status of each quartet
-  splitStatuses <- SplitStatus(sq_trees)
-  
-  # Calculate the Robinson Foulds distances
-  RobinsonFoulds(splitStatuses)
-  
-  # Normalize the Robinson Foulds distance by dividing by the number of 
-  # splits present in the two trees:
-  RobinsonFoulds(splitStatuses) / splitStatuses[, 'N']
-  
-  # Normalize the Robinson Foulds distance by dividing by the total number of 
-  # splits that it is possible to resolve for `n` tips:
-  nTip <- length(sq_trees[[1]]$tip.label)
-  nPartitions <- 2 * (nTip - 3L) # Does not include the nTip partitions that 
-                                 # comprise but a single tip
-  RobinsonFoulds(splitStatuses) / nPartitions
-  
-}
+data('sq_trees')
+
+# Calculate the status of each quartet
+splitStatuses <- SplitStatus(sq_trees)
+
+# Calculate the raw symmetric difference (i.e. Robinsonâ€“Foulds distance)
+RawSymmetricDifference(splitStatuses)
+
+# Normalize the Robinson Foulds distance by dividing by the number of 
+# splits present in the two trees:
+RawSymmetricDifference(splitStatuses) / splitStatuses[, 'N']
+
+# Normalize the Robinson Foulds distance by dividing by the total number of 
+# splits that it is possible to resolve for `n` tips:
+nTip <- length(sq_trees[[1]]$tip.label)
+nPartitions <- 2 * (nTip - 3L) # Does not include the nTip partitions that 
+                               # comprise but a single tip
+RawSymmetricDifference(splitStatuses) / nPartitions
+
 
 }
 \references{
-{
-\insertRef{Robinson1981}{Quartet}
-
-\insertRef{Penny1985}{Quartet}
+\itemize{
+\item \insertRef{Robinson1981}{Quartet}
+\item \insertRef{Penny1985}{Quartet}
 }
 }
 \seealso{
-Other element-by-element comparisons: \code{\link{CompareQuartets}},
-  \code{\link{CompareSplits}},
-  \code{\link{PairSharedQuartetStatus}},
-  \code{\link{QuartetState}},
-  \code{\link{SharedQuartetStatus}}
+Other element-by-element comparisons: 
+\code{\link{CompareQuartetsMulti}()},
+\code{\link{CompareQuartets}()},
+\code{\link{CompareSplits}()},
+\code{\link{PairSharedQuartetStatus}()},
+\code{\link{QuartetState}()},
+\code{\link{SharedQuartetStatus}()}
 }
 \author{
 \href{https://orcid.org/0000-0001-5660-1727}{Martin R. Smith}

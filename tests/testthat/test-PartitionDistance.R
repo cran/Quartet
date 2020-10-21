@@ -14,6 +14,12 @@ test_that("Splits are compared", {
                SharedSplitStatus(TreeTools::UnshiftTree(
                  ape::drop.tip(sq_trees$move_one_near, 10),
                  list(ape::drop.tip(sq_trees$ref_tree, 11))))[2, ])
+  expect_equal(SharedSplitStatus(BalancedTree(9)),
+               PairSharedSplitStatus(BalancedTree(9), BalancedTree(9)))
+  expect_equal(SharedSplitStatus(BalancedTree(9), PectinateTree(9)),
+               PairSharedSplitStatus(BalancedTree(9), PectinateTree(9)))
+  expect_equal(SharedSplitStatus(list(BalancedTree(9)), PectinateTree(9)),
+               SharedSplitStatus(c(BalancedTree(9)), PectinateTree(9)))
 })
 
 test_that("CompareSplits works", {
@@ -31,8 +37,9 @@ test_that("CompareSplits works", {
   
   expect_equal(c(N=9L, P1=4L, P2=5L, s=2L, d1=1L, d2=1L, r1=1L, r2=2L),
                CompareSplits(splitsA, splitsB))
-  expect_equal(c(tree = 5L), RobinsonFoulds(CompareSplits(splitsA, splitsB),
-                                            similarity = FALSE))
+  expect_equal(c(tree = 5L),
+               RawSymmetricDifference(CompareSplits(splitsA, splitsB),
+                                      similarity = FALSE))
   
   splitsC <- as.Splits(ape::read.tree(text="(((a, d), e), (b, (f, c)));"))
   splitsD <- as.Splits(ape::read.tree(text="((a, b, c), (d, (e, f)));"))
@@ -41,8 +48,9 @@ test_that("CompareSplits works", {
   
   expect_equal(c(N=5L, P1=3L, P2=2L, s=0L, d1=3L, d2=2L, r1=0L, r2=0L),
                CompareSplits(splitsC, splitsD))
-  expect_equal(c(tree = 5L), RobinsonFoulds(CompareSplits(splitsC, splitsD), 
-                                            similarity = FALSE))
+  expect_equal(c(tree = 5L), 
+               RawSymmetricDifference(CompareSplits(splitsC, splitsD), 
+                                      similarity = FALSE))
 
   expect_equal(c(N=3L, P1=3L, P2=0L, s=0L, d1=0L, d2=0L, r1=3L, r2=0L),
                CompareSplits(splitsC, splitsU))
@@ -50,4 +58,11 @@ test_that("CompareSplits works", {
   expect_equal(c(N=2L, P1=0L, P2=2L, s=0L, d1=0L, d2=0L, r1=0L, r2=2L),
                CompareSplits(splitsU, splitsD))
   
+  funnyNodes5 <- structure(list(
+    edge = matrix(c(6, 6, 6, 8, 8, 7, 7,
+                    1, 2, 8, 3, 7, 4, 5), 7L, 2L),
+    tip.label = paste0('t', 1:5),
+    Nnode = 3L), class = 'phylo')
+  expect_equivalent(c(4, 2, 2, 2, 0, 0, 0, 0),
+                    CompareSplits(funnyNodes5, unroot(PectinateTree(5))))
 })

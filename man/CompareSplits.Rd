@@ -45,22 +45,21 @@ CompareSplits(splits1, splits2)
         
 }
 \references{
-{
-
-\insertRef{Estabrook1985}{Quartet}
-
-\insertRef{Robinson1981}{Quartet}
-
+\itemize{
+\item \insertRef{Estabrook1985}{Quartet}
+\item \insertRef{Robinson1981}{Quartet}
 }
 }
 \seealso{
-\code{\link{CompareQuartets}}: equivalent function for quartets.
+Equivalent function for quartets: \code{\link[=CompareQuartets]{CompareQuartets()}}
 
-Other element-by-element comparisons: \code{\link{CompareQuartets}},
-  \code{\link{PairSharedQuartetStatus}},
-  \code{\link{QuartetState}},
-  \code{\link{SharedQuartetStatus}},
-  \code{\link{SplitStatus}}
+Other element-by-element comparisons: 
+\code{\link{CompareQuartetsMulti}()},
+\code{\link{CompareQuartets}()},
+\code{\link{PairSharedQuartetStatus}()},
+\code{\link{QuartetState}()},
+\code{\link{SharedQuartetStatus}()},
+\code{\link{SplitStatus}()}
 }
 \author{
 \href{https://orcid.org/0000-0001-5660-1727}{Martin R. Smith}

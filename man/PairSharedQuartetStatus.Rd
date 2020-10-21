@@ -13,9 +13,9 @@ to compare.}
 \value{
 Returns a named array of six integers corresponding to the quantities of Estabrook \emph{et al}. (1985):
 \describe{
-\item{N}{The total number of quartet \emph{statements} for two trees of \emph{n} tips,
+\item{N}{The total number of quartet \emph{statements} for two trees of \emph{n} leaves,
 i.e. 2 \emph{Q}.}
-\item{Q}{The total number of quartets for \emph{n} tips.}
+\item{Q}{The total number of quartets for \emph{n} leaves.}
 \item{s}{The number of quartets that are resolved identically in both trees.}
 \item{d}{The number of quartets that are resolved differently in each tree.}
 \item{r1}{The number of quartets that are resolved in tree 1, but not in tree 2.}
@@ -28,10 +28,13 @@ Removes all tips that do not occur in both \code{tree1} and \code{tree2}, then c
 the status of the remaining quartets.
 }
 \seealso{
-Other element-by-element comparisons: \code{\link{CompareQuartets}},
-  \code{\link{CompareSplits}}, \code{\link{QuartetState}},
-  \code{\link{SharedQuartetStatus}},
-  \code{\link{SplitStatus}}
+Other element-by-element comparisons: 
+\code{\link{CompareQuartetsMulti}()},
+\code{\link{CompareQuartets}()},
+\code{\link{CompareSplits}()},
+\code{\link{QuartetState}()},
+\code{\link{SharedQuartetStatus}()},
+\code{\link{SplitStatus}()}
 }
 \author{
 \href{https://orcid.org/0000-0001-5660-1727}{Martin R. Smith}

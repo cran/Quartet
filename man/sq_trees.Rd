@@ -3,8 +3,10 @@
 \docType{data}
 \name{sq_trees}
 \alias{sq_trees}
-\title{Eighteen trees}
-\format{An object of class \code{multiPhylo} of length 18.}
+\title{Eighteen example trees}
+\format{
+An object of class \code{multiPhylo} of length 18.
+}
 \usage{
 sq_trees
 }

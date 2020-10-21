@@ -1,3 +1,30 @@
+# Quartet v1.2.0
+
+## New features
+ - `CompareQuartetsMulti()` compares quartet status in one tree with status in
+   multiple others.
+ - `VisualizeQuartets()` depicts contribution of splits to quartet score.
+ - `SimilarityToReference()` allows comparison against specified reference
+   topology.
+
+## Changes
+ - Deprecate `RobinsonFoulds()`: renamed to `RawSymmetricDifference()`.
+ - `QuartetState[s]()` now uses sister-of-4 notation, rather than sister-of-1,
+   to give values within [0, 3].
+ - `ManyToManyQuartetAgreement()` now returns entries for `N` and `Q`. 
+ 
+## Improvements
+ - Faster C++ implementation of `AllQuartets()` and `QuartetStates()`.
+ -  `QuartetStatus()` now supports non-identical leaf samples.
+ - `SimilarityMetrics()` now handles single tree comparisons.
+ - Correctly calculate resolution of unrooted trees with unconventional node
+   numbering conventions.
+ - Remove errant name when comparing unnamed tree pairs.
+ - Small improvements to `PlotQuartet()`.
+ - Minor efficiency improvements.
+ - Documentation improvements.
+
+
 # Quartet v1.1.0
 
  - Pass trees directly to C, without writing to temporary intermediate file.

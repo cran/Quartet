@@ -13,10 +13,10 @@ SymmetricDifferenceLines(nsd, ...)
 \item{nsd}{Vector specifying normalized symmetric differences to plot.}
 
 \item{\dots}{Further parameters to pass to
-\code{\link[Ternary:AddToTernary]{TernaryLines}}.}
+\code{\link[Ternary:AddToTernary]{TernaryLines}()}.}
 }
 \value{
-Returns a matrix of dim \code{(length(nsd), 6)}, with columns named
+Returns a matrix of dim \verb{(length(nsd), 6)}, with columns named
 \code{r2a}, \code{da}, \code{sa}, \code{r2b}, \code{db} and \code{sb}.
 Lines from \code{a} to \code{b} in each row connect points of equal symmetric difference.
 }

@@ -3,7 +3,7 @@
 \name{TQDist}
 \alias{TQDist}
 \alias{TQAE}
-\title{tqDist wrapper}
+\title{Wrapper for tqDist}
 \usage{
 TQDist(trees)
 
@@ -14,21 +14,22 @@ TQAE(trees)
 \code{\link[ape:read.tree]{multiPhylo}}.}
 }
 \value{
-\code{TQDist} returns the quartet distance between each pair of trees.
+\code{TQDist()} returns the quartet distance between each pair of trees.
 
-\code{TQAE} returns the number of resolved quartets in agreement between
-each pair of trees (A in Brodal \emph{et al}. 2013) and the number of quartets
-that are unresolved in both trees (E in Brodal \emph{et al}. 2013).
+\code{TQAE()} returns the number of resolved quartets in agreement between
+each pair of trees ('A' in Brodal \emph{et al}. 2013) and the number of quartets
+that are unresolved in both trees ('E' in Brodal \emph{et al}. 2013).
 }
 \description{
-Convenience function that takes a list of trees, writes them to the text file
-expected by the C implementation of tqDist (Sand \emph{et al.} 2014).
-tqDist is then called, and the temporary file is deleted when analysis is complete.
+Convenience function that takes a list of trees, writes them to the text
+file expected by the C implementation of tqDist (Sand \emph{et al.} 2014).
+tqDist is then called, and the temporary file is deleted when analysis is
+complete.
 }
 \details{
-Quartets can be resolved in one of five ways, which
-Brodal \emph{et al}. (2013) and Holt \emph{et al}. (2014) distinguish using the letters
-A--E, and Estabrook (1985) refers to as:
+Quartets can be resolved in one of five ways, which Brodal \emph{et al}. (2013)
+and Holt \emph{et al}. (2014) distinguish using the letters A--E, and
+Estabrook \emph{et al.} (1985) refers to as:
 \itemize{
 \item A: \emph{s} = resolved the \strong{s}ame in both trees;
 \item B: \emph{d} = resolved \strong{d}ifferently in both trees;
@@ -37,19 +38,13 @@ A--E, and Estabrook (1985) refers to as:
 \item E: \emph{u} = \strong{u}nresolved in both trees.
 }
 }
-\section{Functions}{
-\itemize{
-\item \code{TQAE}: Number of agreeing quartets that are resolved / unresolved.
-}}
-
 \references{
-\insertRef{Brodal2013}{Quartet}
-
-\insertRef{Estabrook1985}{Quartet}
-
-\insertRef{Holt2014}{Quartet}
-
-\insertRef{Sand2014}{Quartet}
+\itemize{
+\item \insertRef{Brodal2013}{Quartet}
+\item \insertRef{Estabrook1985}{Quartet}
+\item \insertRef{Holt2014}{Quartet}
+\item \insertRef{Sand2014}{Quartet}
+}
 }
 \seealso{
 \code{\link[=CompareQuartets]{CompareQuartets()}}, \code{\link[=QuartetStatus]{QuartetStatus()}}

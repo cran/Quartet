@@ -31,7 +31,7 @@
 #'   the Robinson-Foulds distance.
 #'
 #' @family element-by-element comparisons
-#' @seealso `\link{CompareQuartets}`: equivalent function for quartets.
+#' @seealso Equivalent function for quartets: [`CompareQuartets()`]
 #'         
 #' @examples 
 #' splits1 <- TreeTools::BalancedTree(8)
@@ -39,13 +39,12 @@
 #' 
 #' CompareSplits(splits1, splits2)
 #'         
-#' @references {
+#' @references
 #' 
-#'  \insertRef{Estabrook1985}{Quartet}
+#'  - \insertRef{Estabrook1985}{Quartet}
 #' 
-#'  \insertRef{Robinson1981}{Quartet}
+#'  - \insertRef{Robinson1981}{Quartet}
 #'  
-#' }       
 #' @template MRS
 #' @name CompareSplits
 #' @importFrom TreeTools as.Splits WithoutTrivialSplits in.Splits
@@ -123,52 +122,49 @@ CompareBipartitions <- CompareSplits
 #'   
 #' @family element-by-element comparisons
 #'         
-#' @examples{
-#'   data('sq_trees')
-#'   
-#'   # Calculate the status of each quartet
-#'   splitStatuses <- SplitStatus(sq_trees)
-#'   
-#'   # Calculate the Robinson Foulds distances
-#'   RobinsonFoulds(splitStatuses)
-#'   
-#'   # Normalize the Robinson Foulds distance by dividing by the number of 
-#'   # splits present in the two trees:
-#'   RobinsonFoulds(splitStatuses) / splitStatuses[, 'N']
-#'   
-#'   # Normalize the Robinson Foulds distance by dividing by the total number of 
-#'   # splits that it is possible to resolve for `n` tips:
-#'   nTip <- length(sq_trees[[1]]$tip.label)
-#'   nPartitions <- 2 * (nTip - 3L) # Does not include the nTip partitions that 
-#'                                  # comprise but a single tip
-#'   RobinsonFoulds(splitStatuses) / nPartitions
-#'   
-#' }
+#' @examples
+#' data('sq_trees')
 #' 
-#' @references {
-#'   \insertRef{Robinson1981}{Quartet}
+#' # Calculate the status of each quartet
+#' splitStatuses <- SplitStatus(sq_trees)
+#' 
+#' # Calculate the raw symmetric difference (i.e. Robinson–Foulds distance)
+#' RawSymmetricDifference(splitStatuses)
+#' 
+#' # Normalize the Robinson Foulds distance by dividing by the number of 
+#' # splits present in the two trees:
+#' RawSymmetricDifference(splitStatuses) / splitStatuses[, 'N']
+#' 
+#' # Normalize the Robinson Foulds distance by dividing by the total number of 
+#' # splits that it is possible to resolve for `n` tips:
+#' nTip <- length(sq_trees[[1]]$tip.label)
+#' nPartitions <- 2 * (nTip - 3L) # Does not include the nTip partitions that 
+#'                                # comprise but a single tip
+#' RawSymmetricDifference(splitStatuses) / nPartitions
+#'
+#' 
+#' @references 
+#' - \insertRef{Robinson1981}{Quartet}
 #'   
-#'   \insertRef{Penny1985}{Quartet}
-#' }
+#' - \insertRef{Penny1985}{Quartet}
 #' 
 #' 
 #' @template MRS
-#' @importFrom TreeTools RenumberTips as.Splits UnshiftTree
+#' @importFrom TreeTools RenumberTips as.Splits NTip UnshiftTree
 #' @aliases BipartitionStatus
 #' @export
 SplitStatus <- function (trees, cf = trees[[1]]) {
   compareWithFirst <- identical(cf, trees[[1]])
   if (!compareWithFirst) trees <- UnshiftTree(cf, trees)
   
-  treeStats <- vapply(trees, function (tr) length(tr$tip.label), double(1))
+  treeStats <- NTip(trees)
   if (length(unique(treeStats)) > 1) {
     stop("All trees must have the same number of tips")
   }
   
   splits <- as.Splits(trees)
-  ret <- vapply(splits, CompareSplits, splits2=splits[[1]], double(8))
-  rownames(ret) <- c('N', 'P1', 'P2', 's', 'd1', 'd2', 'r1', 'r2')
-  
+  ret <- vapply(splits, CompareSplits, splits2 = splits[[1]], double(8))
+
   # Return:
   if (compareWithFirst) t(ret) else t(ret[, -1])
 }
@@ -182,9 +178,21 @@ BipartitionStatus <- SplitStatus
 #'   tips that do not occur in both trees being compared.
 #' @aliases SharedBipartitionStatus
 #' @export
-SharedSplitStatus <- function (trees, cf=trees[[1]]) {
-  t(vapply(trees, PairSharedSplitStatus, cf=cf, 
-           c(N = 0L, P1 = 0L, P2 = 0L, s = 0L, d1 = 0L, d2 = 0L, r1 = 0L, r2 = 0L)))
+SharedSplitStatus <- function (trees, cf) UseMethod('SharedSplitStatus')
+
+#' @export
+SharedSplitStatus.list <-  function (trees, cf = trees[[1]]) {
+  t(vapply(trees, PairSharedSplitStatus, cf = cf, 
+           c(N = 0L, P1 = 0L, P2 = 0L, s = 0L, 
+             d1 = 0L, d2 = 0L, r1 = 0L, r2 = 0L)))
+}
+
+#' @export
+SharedSplitStatus.multiPhylo <- SharedSplitStatus.list
+
+#' @export
+SharedSplitStatus.phylo <- function (trees, cf = trees) {
+  PairSharedSplitStatus(trees, cf)
 }
 
 #' @keywords internal

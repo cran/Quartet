@@ -4,7 +4,8 @@ data('sq_trees')
 ref_tree <- sq_trees$ref_tree
 Metrics <- list(DoNotConflict, ExplicitlyAgree, StrictJointAssertions,
                 SemiStrictJointAssertions, SymmetricDifference,
-                MarczewskiSteinhaus, SteelPenny, QuartetDivergence)
+                MarczewskiSteinhaus, SteelPenny, QuartetDivergence,
+                SimilarityToReference)
 
 test_that("Quartets are counted correctly", {
   easyTreesy <- list(
@@ -29,21 +30,26 @@ test_that("Quartets are counted correctly", {
 test_that("Quartet metrics are sane", {
   sq_status <- QuartetStatus(sq_trees)
   sims  <- SimilarityMetrics(sq_status)
-  dists <- SimilarityMetrics(sq_status, similarity=FALSE)
+  dists <- SimilarityMetrics(sq_status, similarity = FALSE)
+
   expect_true(all(sims <= 1))
   expect_true(all(sims + dists == 1)[-4]) # SSJA doesn't sum to 1
   expect_true(all(dists['ref_tree', ] == 0))
   
-  expect_equal(sims[, 'DoNotConflict'], as.double(DoNotConflict(sq_status)))
-  expect_equal(sims[, 'ExplicitlyAgree'], as.double(ExplicitlyAgree(sq_status)))
-  expect_equal(sims[, 'StrictJointAssertions'], as.double(StrictJointAssertions(sq_status)))
-  expect_equal(sims[, 'SemiStrictJointAssertions'], as.double(SemiStrictJointAssertions(sq_status)))
-  expect_equal(sims[, 'SymmetricDifference'], as.double(SymmetricDifference(sq_status)))
-  expect_equal(sims[, 'MarczewskiSteinhaus'], as.double(MarczewskiSteinhaus(sq_status)))
-  expect_equal(sims[, 'SteelPenny'], as.double(SteelPenny(sq_status)))
-  expect_equal(sims[, 'QuartetDivergence'], as.double(QuartetDivergence(sq_status)))
+  expect_equivalent(sims[, 'DoNotConflict'], DoNotConflict(sq_status))
+  expect_equivalent(sims[, 'ExplicitlyAgree'], ExplicitlyAgree(sq_status))
+  expect_equivalent(sims[, 'StrictJointAssertions'], StrictJointAssertions(sq_status))
+  expect_equivalent(sims[, 'SemiStrictJointAssertions'], SemiStrictJointAssertions(sq_status))
+  expect_equivalent(sims[, 'SymmetricDifference'], SymmetricDifference(sq_status))
+  expect_equivalent(sims[, 'MarczewskiSteinhaus'], MarczewskiSteinhaus(sq_status))
+  expect_equivalent(sims[, 'SteelPenny'], SteelPenny(sq_status))
+  expect_equivalent(sims[, 'QuartetDivergence'], QuartetDivergence(sq_status))
+  expect_equivalent(sims[, 'SimilarityToReference'], SimilarityToReference(sq_status))
   
-  testData <- c(N=16L, Q=8, s=1, d=2, r1=1, r2=1, u=3)
+  sim6 <- SimilarityMetrics(sq_status[6, ])
+  expect_equivalent(sims[6, ], sim6)
+  
+  testData <- c(N = 16L, Q = 8, s = 1, d = 2, r1 = 1, r2 = 1, u = 3)
   expect_equal(c(tree = 2/8), DoNotConflict(testData, FALSE))
   expect_equal(c(tree = 7/8), ExplicitlyAgree(testData, FALSE))
   expect_equal(c(tree = 2/3), StrictJointAssertions(testData, FALSE))
@@ -52,6 +58,8 @@ test_that("Quartet metrics are sane", {
   expect_equal(c(tree = 6/7), MarczewskiSteinhaus(testData, FALSE))
   expect_equal(c(tree = 4/8), SteelPenny(testData, FALSE))
   expect_equal(c(tree = 6/16), QuartetDivergence(testData, FALSE))
+  expect_equal(c(tree = 1), SimilarityToReference(testData, FALSE, TRUE))
+  expect_equal(c(tree = 0), SimilarityToReference(testData, TRUE, TRUE)) # rounding?
   
   # Metrics should be identical with bifurcating trees.
   treeNodes <- vapply(sq_trees, function (tr) tr$Nnode, double(1))
@@ -83,9 +91,9 @@ test_that("Quartet metrics handle polytomous pairs", {
     ape::read.tree(text='(A, (B, (C, ((D, E), (F, G)))));')
   )
   polyStates <- QuartetStates(polytomous)
-  expect_equal(c(rep(2, 19), 0, rep(2, 9), 0, 2, 2, 2, 0, 0), polyStates[1, ])
-  expect_equal(c(rep(2, 10), 0, 0, 4, 0, 4, 4, 0, 4, 
-                 4, 4, 0, 0, 4, 0, 4, 4, 0, 4, 4, 4, rep(0, 5)), polyStates[2, ])
+  expect_equal(c(rep(3, 19), 0, rep(3, 9), 0, 3, 3, 3, 0, 0), polyStates[1, ])
+  expect_equal(c(rep(3, 10), 0, 0, 1, 0, 1, 1, 0, 1, 
+                 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, rep(0, 5)), polyStates[2, ])
   
   qStat <- QuartetStatus(polytomous)
   expect_identical(qStat[1, ], c(N=70L, Q=35L, s=31L, d=0L, r1=0L, r2=0L, u=4L))
@@ -133,8 +141,10 @@ test_that ("Partitions are counted correctly", {
   expect_true(all(rowSums(p_dist[, c('s', 'd1', 'r1')]) == p_dist[, 'P1']))
   expect_true(all(rowSums(p_dist[, c('s', 'd2', 'r2')]) == p_dist[, 'P2']))
   
-  expect_equal(rf_dist, as.integer(RobinsonFoulds(p_dist)))
-  expect_equal(rf_dist, as.integer(p_dist[, 'N'] - RobinsonFoulds(p_dist, similarity=TRUE)))
+  expect_equal(rf_dist, as.integer(RawSymmetricDifference(p_dist)))
+  expect_equal(rf_dist, 
+               as.integer(p_dist[, 'N'] -
+                            RawSymmetricDifference(p_dist, similarity = TRUE)))
   expect_equal(sum(p_dist['move_one_mid' , c('r1', 'd1')]),
                sum(p_dist['m1mid_col1'   , c('r1', 'd1')]),
                sum(p_dist['m1mid_colsome', c('r1', 'd1')]))
@@ -156,3 +166,23 @@ test_that("Incomparable trees fail gracefully", {
   # Must have same number of tips
   expect_error(SplitStatus(list(ref_tree, ape::rtree(6)))) 
 })
+
+test_that(".StatusToArray()", {
+  mqa <- ManyToManyQuartetAgreement(sq_trees[5:6])
+  mqaNQ <- mqa[, , -c(1, 2)]
+  qNames <- dimnames(.StatusToArray(mqa))
+  status <- aperm(vapply(sq_trees[5:6],
+                         function (x) SplitStatus(sq_trees[5:6], x),
+                         SplitStatus(sq_trees[5:6], sq_trees[[1]])),
+                  c(1, 3, 2))
+  sNames <- dimnames(.StatusToArray(status))
+  expect_true(all(c("N", "Q", "s", "d", "r1", "r2", "u", "2d") %in%
+                    qNames[[3]]))
+  expect_true(all(c("N", "Q", "s", "d", "r1", "r2", "u", "2d") %in%
+                    dimnames(.StatusToArray(mqaNQ))[[3]]))
+  expect_true(all(c("N", "P1", "P2", "s", "d1", "d2", "r1", "r2", "2d") %in%
+                    sNames[[3]]))
+  expect_true(all(c("N", "P1", "P2", "s", "d1", "d2", "r1", "r2", "2d") %in%
+                    dimnames(.StatusToArray(status[, , -1]))[[3]]))
+})
+  
