@@ -1,3 +1,7 @@
+# Quartet v1.2.2
+
+ - Package 'vdiffr' now used conditionally.
+
 # Quartet v1.2.0
 
 ## New features
