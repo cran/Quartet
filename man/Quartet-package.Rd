@@ -59,10 +59,11 @@ Bioinformatics. 30:2079–2080. https://doi.org/10.1093/bioinformatics/btu157
 informative trees from simulated morphological datasets. Biol. Lett.
 15:20180632. https://doi.org/10.1098/rsbl.2018.0632
 \item Smith, M.R. 2020. Information theoretic generalized Robinson–Foulds metrics
-for comparing phylogenetic trees. Bioinformatics, in production.
+for comparing phylogenetic trees. Bioinformatics 36:5007–5013.
 https://dx.doi.org/10.1093/bioinformatics/btaa614/5866976
-\item Smith, M.R. 2021. The importance of methodology when analysing landscapes of
-phylogenetic trees. Forthcoming.
+\item Smith, M.R. 2022. Robust analysis of phylogenetic tree space.
+Systematic Biology, syab100.
+https://dx.doi.org/10.1093/sysbio/syab100
 \item Steel, M. and Penny, D. 1993. Distributions of tree comparison metrics:
 some new results. Syst. Biol. 42: 126-141.
 https://doi.org/10.1093/sysbio/42.2.126
