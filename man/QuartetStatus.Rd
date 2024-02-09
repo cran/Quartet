@@ -86,21 +86,21 @@ tqdist C library (Sand \emph{et al}. 2014).
 }
 \section{Functions}{
 \itemize{
-\item \code{SharedQuartetStatus}: Reports split statistics obtained after removing all
+\item \code{SharedQuartetStatus()}: Reports split statistics obtained after removing all
 tips that do not occur in both trees being compared.
 
-\item \code{ManyToManyQuartetAgreement}: Agreement of each quartet, comparing each pair of
+\item \code{ManyToManyQuartetAgreement()}: Agreement of each quartet, comparing each pair of
 trees in a list.
 
-\item \code{TwoListQuartetAgreement}: Agreement of each quartet in trees in one list with
+\item \code{TwoListQuartetAgreement()}: Agreement of each quartet in trees in one list with
 each quartet in trees in a second list.
 
-\item \code{SingleTreeQuartetAgreement}: Agreement of each quartet in trees in a list with
+\item \code{SingleTreeQuartetAgreement()}: Agreement of each quartet in trees in a list with
 the quartets in a comparison tree.
-}}
 
+}}
 \examples{
-data('sq_trees')
+data("sq_trees")
 # Calculate the status of each quartet relative to the first entry in 
 # sq_trees
 sq_status <- QuartetStatus(sq_trees)
@@ -113,7 +113,7 @@ sq_status <- QuartetStatus(two_moved, sq_trees$ref_tree)
 SimilarityMetrics(sq_status)
 
 # Compare trees that include a subset of the taxa 1..10
-library('TreeTools', quietly = TRUE, warn.conflict = FALSE)
+library("TreeTools", quietly = TRUE, warn.conflict = FALSE)
 QuartetStatus(BalancedTree(1:5), BalancedTree(3:8), nTip = 10)
 
 # If all taxa studied occur in `trees` or `cf`, set `nTip = TRUE`

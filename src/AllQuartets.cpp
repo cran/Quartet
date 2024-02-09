@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <cstdint> // for INT_FAST16_MAX
 using namespace Rcpp;
 typedef int_fast16_t int16;
 typedef int_fast32_t int32;
@@ -27,7 +28,26 @@ __attribute__((constructor)) // Construction avoids floating point worries
 
 // [[Rcpp::export]]
 IntegerMatrix all_quartets(IntegerVector nTips) {
+  if (!nTips.length()) {
+    Rcpp::stop("nTips must contain a single integer value");
+  }
+  if (INT_FAST16_MAX < INT_MAX && // Supress warning of tautological comparison
+      nTips[0] >= int32(INT_FAST16_MAX)) {
+    Rcpp::stop("nTips must be < 32768");
+  }
+  if (nTips[0] < 4) {
+    Rcpp::stop("nTips must be at least 4");
+  }
+  
   int16 n = nTips[0];
+  if (int32(n) != nTips[0]) {
+    Rcpp::stop("Integer overflow: nTips must be < 32768. Contact maintainer.");
+  }
+  if (int32(n) > 55108) {
+    // n * (n - 1) * (n - 2) * (n - 3) > INT_FAST32_MAX
+    Rcpp::stop("int32 overflow: nTips must be < 55108.");
+  }
+  
   int32 n_quartets = n * (n - 1) * (n - 2) * (n - 3) / (1 * 2 * 3 * 4);
   int32 q = n_quartets - 1;
   IntegerMatrix ret(4, n_quartets);
