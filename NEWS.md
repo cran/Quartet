@@ -1,3 +1,12 @@
+# Quartet v1.3.0 (2026-03-19)
+
+- OpenMP parallelism for quartet calculations.
+- Improvements to memory allocation and cache performance.
+- Move `ResolvedQuartets()` core computation to C++.
+- Reduce inefficient R-side processing in `SingleTreeQuartetAgreement()`,
+  `QuartetStatus()` and `TwoListQuartetAgreement()`.
+- R <4.1 is no longer formally supported.
+
 # Quartet v1.2.7 (2024-10-31)
 
 - `VizualizeQuartet()` now returns calculation results.

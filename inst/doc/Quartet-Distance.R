@@ -50,7 +50,7 @@ tree_c <- ape::read.tree(text="((1, 2), ((3, 6), (4, 5)));")
 
 ## ----Add-tip-6-to-Tree-C, fig.height=1.6, fig.width=2, echo=FALSE-------------
 par(mar = rep(0.3, 4))
-plot(tree_c, tip.color = c(1,1,1,2,1,1))
+plot(tree_c, tip.color = c(1, 1, 1, 2, 1, 1))
 
 ## ----Adding-tip-6-to-Tree-B-duplicates-a-quartet, fig.height=5, fig.width=2.5, echo=FALSE----
 PlotApeTree <- function (text, quartet) {
